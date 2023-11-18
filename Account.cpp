@@ -208,18 +208,6 @@ string Account::Login()
 	}
 	return phonenumber_re;
 }
-void Account::Rewrite()
-{
-	System system;
-	system.ReadUserInfo();
-	const vector<System::UserData*>& data = system.GetMyData();
-	ofstream clear_file("UserInfo.txt");
-	clear_file.close();
-	for (const auto& u : data)
-	{
-		system.WriteUserInfo(*u);;
-	}
-}
 void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什么
 {
 	System system;
@@ -238,7 +226,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 			{
 				cout << "用户名更新完毕！" << endl;
 				user->username = input;
-				Rewrite();
+				ofstream clear_file("UserInfo.txt");
+				clear_file.close();
+				for (const auto& u : data)
+				{
+					system.WriteUserInfo(*u);;
+				}
 				break;
 			}
 		}
@@ -293,13 +286,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 			{
 				cout << "密码更新成功！" << endl;
 				user->password = input;
-				/*ofstream clear_file("UserInfo.txt");
+				ofstream clear_file("UserInfo.txt");
 				clear_file.close();
 				for (const auto& u : data)
 				{
 					system.WriteUserInfo(*u);;
-				}*/
-				Rewrite();
+				}
 				break;
 			}
 		}
@@ -324,7 +316,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 					cout << "其他用户不能使用手机号寻找您！" << endl;
 					user->phonefind = 0;
 				}
-				Rewrite();
+				ofstream clear_file("UserInfo.txt");
+				clear_file.close();
+				for (const auto& u : data)
+				{
+					system.WriteUserInfo(*u);;
+				}
 				break;
 			}
 		}
@@ -349,7 +346,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 					cout << "其他用户不能使用昵称寻找您！" << endl;
 					user->usernamefind = 0;
 				}
-				Rewrite();
+				ofstream clear_file("UserInfo.txt");
+				clear_file.close();
+				for (const auto& u : data)
+				{
+					system.WriteUserInfo(*u);;
+				}
 				break;
 			}
 		}
@@ -377,7 +379,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 					user->phonefind = 0;
 					user->usernamefind = 0;
 				}
-				Rewrite();
+				ofstream clear_file("UserInfo.txt");
+				clear_file.close();
+				for (const auto& u : data)
+				{
+					system.WriteUserInfo(*u);;
+				}
 				break;
 			}
 		}
@@ -408,7 +415,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 					user->accept = 0;
 					user->question = question_str;
 				}
-				Rewrite();
+				ofstream clear_file("UserInfo.txt");
+				clear_file.close();
+				for (const auto& u : data)
+				{
+					system.WriteUserInfo(*u);;
+				}
 				break;
 			}
 		}
@@ -433,7 +445,12 @@ void Account::Change(string& phonenumber_re, char& index) //这个可以选择是更改什
 					cout << "更改结束！你的朋友圈对朋友关闭啦" << endl;
 					user->moment = 0;
 				}
-				Rewrite();
+				ofstream clear_file("UserInfo.txt");
+				clear_file.close();
+				for (const auto& u : data)
+				{
+					system.WriteUserInfo(*u);;
+				}
 				break;
 			}
 		}
