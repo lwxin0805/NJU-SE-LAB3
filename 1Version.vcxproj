@@ -127,9 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="InterfaceUI.h" />
     <ClInclude Include="MyChat.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="InterfaceUI.cpp" />
     <ClCompile Include="MyChat.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
