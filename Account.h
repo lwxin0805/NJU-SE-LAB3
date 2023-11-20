@@ -5,7 +5,6 @@ using namespace std;
 class Account
 {
 public:
-	void Rewrite();
 	bool CheckPassword(string& password);
 	void Register();
 	string Login();

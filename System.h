@@ -30,7 +30,6 @@ public:
 	void ReadFriendList();
 	const vector<FriendData*>& GetMyFriend() const;
 
-
 	struct MessageOneData
 	{
 		string phonenumber_sender;
