@@ -69,30 +69,33 @@ void Moment::MomentCheckAll(string& phonenumber)
 	{
 		if (a.BoolNotFriend(phonenumber, moment->phonenumber) && CheckIfMomentSeen(moment->phonenumber)) //为什么进不去...
 		{
-			got = true;
-			cout << moment->phonenumber << "：" << moment->content <<  endl;
-			cout << "点赞：" << moment->likecount << endl;
-			cout << "请问您是否想点赞？" << endl;
-			cout << "yes/no" << endl;
-			cin >> ans;
-			if (ans == "yes")
+			if (moment->visible == 1)
 			{
-				MomentLike(moment->index);
-			}
-			cout << "留言：" << endl;
-			for (const auto& comments : comment)
-			{
-				if (moment->index == comments->index && comments->visible ==1) //留言1才可以被查看
+				got = true;
+				cout << moment->phonenumber << "：" << moment->content << endl;
+				cout << "点赞：" << moment->likecount << endl;
+				cout << "请问您是否想点赞？" << endl;
+				cout << "yes/no" << endl;
+				cin >> ans;
+				if (ans == "yes")
 				{
-					cout << comments->phonenumber << ":" << comments->content << endl;
+					MomentLike(moment->index);
 				}
-			}
-			cout << "请问您是否想评论？" << endl;
-			cout << "yes/no" << endl;
-			cin >> ans1;
-			if (ans1 == "yes")
-			{
-				MomentComment(phonenumber,moment->index);
+				cout << "留言：" << endl;
+				for (const auto& comments : comment)
+				{
+					if (moment->index == comments->index && comments->visible == 1) //留言1才可以被查看
+					{
+						cout << comments->phonenumber << ":" << comments->content << endl;
+					}
+				}
+				cout << "请问您是否想评论？" << endl;
+				cout << "yes/no" << endl;
+				cin >> ans1;
+				if (ans1 == "yes")
+				{
+					MomentComment(phonenumber, moment->index);
+				}
 			}
 		}
 	}

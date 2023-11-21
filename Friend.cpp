@@ -345,7 +345,7 @@ void Friend::FriendList(string& phonenumber_re) //查看好友列表+可以删除人
 			cin >> delete_str;
 			for (auto& friend_info : data)
 			{
-				if ((phonenumber_re == friend_info->phonenumber_receiver || phonenumber_re == friend_info->phonenumber_sender) && (delete_str == friend_info->phonenumber_receiver || delete_str == friend_info->phonenumber_sender) && friend_info->friend_add == 1)
+				if (BoolNotFriend(phonenumber_re, delete_str) && friend_info->friend_add == 1)
 				{
 					cout << "确定是否删除？" << endl;
 					cout << "yes = 是 / no = 不是" << endl;
