@@ -196,6 +196,14 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 					break;
 				}
 			}
+			for (auto& friend_data : data)
+			{
+				if ((friend_data->phonenumber_receiver == usertophone || friend_data->phonenumber_sender == usertophone) && (friend_data->phonenumber_receiver == phonenumber_re || friend_data->phonenumber_sender == phonenumber_re) && friend_data->friend_add == -1)
+				{
+					deleted = true;
+					break;
+				}
+			}
 			int x = NotFriend(phonenumber_re, usertophone);
 			if (x < 0) //加朋友应该先检查他是不是-1 若是-1就直接更改而不是新加一行
 			{
