@@ -57,7 +57,7 @@ int Friend::NotFriend(string& phonenumber_re, string& phonenumber_se)
 	}
 	return 1;
 }
-void Friend::AddFriend(string& phonenumber_re, char& index)
+void Friend::AddFriend(string& phonenumber_re, char& index) 
 {
 	System system;
 	system.ReadFriendList();
@@ -66,7 +66,7 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 	const vector<System::UserData*>& user_data = system.GetMyData();
 	string input, ans_str, usertophone;
 	char z = '2';
-	bool haventadd = false, gotphone = false, addalr = false;
+	bool haventadd = false, gotphone = false, addalr = false,deleted=false;
 	switch (index)
 	{
 		case'1': //手机号
@@ -74,8 +74,17 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 			cout << "输入您想加好友的手机号" << endl;
 			cin >> input;
 			//现在Not Friend要是不是朋友才可以 所以 就是 要小于0 (不是朋友才可以发送)
+			// 检查是不是 ?
+			for (auto& friend_data : data)
+			{
+				if ((friend_data->phonenumber_receiver == input || friend_data->phonenumber_sender == input) && (friend_data->phonenumber_receiver == phonenumber_re || friend_data->phonenumber_sender == phonenumber_re) && friend_data->friend_add == -1)
+				{
+					deleted = true;
+					break;
+				}
+			}
 			int x = NotFriend(phonenumber_re, input);
-			if (x < 0)
+			if (x < 0) //加朋友应该先检查他是不是-1 若是-1就直接更改而不是新加一行
 			{
 				for (auto& user : user_data)
 				{
@@ -101,7 +110,7 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 						gotphone = true;
 						break;
 					}
-					if (addalr) //要直接输入
+					if (addalr &&(!deleted)) //要直接输入
 					{
 						System::FriendData friendData;
 						friendData.phonenumber_sender = phonenumber_re;
@@ -114,7 +123,7 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 						system.WriteFriendList(friendData);
 						break;
 					}
-					else if (haventadd)
+					else if (haventadd && (!deleted))
 					{
 						System::FriendData friendData;
 						friendData.phonenumber_sender = phonenumber_re;
@@ -126,6 +135,42 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 						friendData.answer = ans_str;
 						system.WriteFriendList(friendData);
 						break;
+					}
+					else if(addalr && deleted)
+					{
+						for (auto& friend_data : data)
+						{
+							if ((friend_data->phonenumber_receiver == input || friend_data->phonenumber_sender == input) && (friend_data->phonenumber_receiver == phonenumber_re || friend_data->phonenumber_sender == phonenumber_re) && friend_data->friend_add == -1)
+							{
+								friend_data->friend_add = 1;
+								friend_data->answer = ans_str;
+								ofstream clear_file("FriendList.txt");
+								clear_file.close();
+								for (const auto& u : data)
+								{
+									system.WriteFriendList(*u);;
+								}
+								break;
+							}
+						}
+					}
+					else if (haventadd && deleted)
+					{
+						for (auto& friend_data : data)
+						{
+							if ((friend_data->phonenumber_receiver == input || friend_data->phonenumber_sender == input) && (friend_data->phonenumber_receiver == phonenumber_re || friend_data->phonenumber_sender == phonenumber_re) && friend_data->friend_add == -1)
+							{
+								friend_data->friend_add = 0;
+								friend_data->answer = ans_str;
+								ofstream clear_file("FriendList.txt");
+								clear_file.close();
+								for (const auto& u : data)
+								{
+									system.WriteFriendList(*u);;
+								}
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -152,18 +197,18 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 				}
 			}
 			int x = NotFriend(phonenumber_re, usertophone);
-			if (x < 0)
+			if (x < 0) //加朋友应该先检查他是不是-1 若是-1就直接更改而不是新加一行
 			{
 				for (auto& user : user_data)
 				{
-					if (user->phonenumber == usertophone && user->accept == 1 && user->usernamefind == 1) //默认通过
+					if (user->phonenumber == usertophone && user->accept == 1 && user->usernamefind == 1) //默认通过 + 能被找到才可以
 					{
 						cout << "默认通过..." << endl;
 						ans_str = " ";
 						gotphone = true;
 						addalr = true;
 					}
-					else if (user->phonenumber == usertophone && user->accept == false && user->usernamefind == 1) //需要回答问题
+					else if (user->phonenumber == usertophone && user->accept == false && user->usernamefind== 1) //需要回答问题+ 能被找到才可以
 					{
 						cout << "因对方设置了需回答问题才能加他为好友" << endl;
 						cout << user->question << endl;
@@ -178,31 +223,67 @@ void Friend::AddFriend(string& phonenumber_re, char& index)
 						gotphone = true;
 						break;
 					}
-					if (addalr) //要直接输入
+					if (addalr && (!deleted)) //要直接输入
 					{
 						System::FriendData friendData;
 						friendData.phonenumber_sender = phonenumber_re;
-						friendData.username_sender = m.FindNameAndPhone(phonenumber_re,z);
+						friendData.username_sender = m.FindNameAndPhone(phonenumber_re, z);
 						friendData.phonenumber_receiver = usertophone;
-						friendData.username_receiver = m.FindNameAndPhone(usertophone,z);
+						friendData.username_receiver = input;
 						friendData.friend_add = 1;
 						friendData.question = user->question;
 						friendData.answer = ans_str;
 						system.WriteFriendList(friendData);
 						break;
 					}
-					else if (haventadd)
+					else if (haventadd && (!deleted))
 					{
 						System::FriendData friendData;
 						friendData.phonenumber_sender = phonenumber_re;
-						friendData.username_sender = m.FindNameAndPhone(phonenumber_re,z);
+						friendData.username_sender = m.FindNameAndPhone(phonenumber_re, z);
 						friendData.phonenumber_receiver = usertophone;
-						friendData.username_receiver = m.FindNameAndPhone(usertophone,z);
+						friendData.username_receiver = input;
 						friendData.friend_add = 0;
 						friendData.question = user->question;
 						friendData.answer = ans_str;
 						system.WriteFriendList(friendData);
 						break;
+					}
+					else if (addalr && deleted)
+					{
+						for (auto& friend_data : data)
+						{
+							if ((friend_data->phonenumber_receiver == usertophone || friend_data->phonenumber_sender == usertophone) && (friend_data->phonenumber_receiver == phonenumber_re || friend_data->phonenumber_sender == phonenumber_re) && friend_data->friend_add == -1)
+							{
+								friend_data->friend_add = 1;
+								friend_data->answer = ans_str;
+								ofstream clear_file("FriendList.txt");
+								clear_file.close();
+								for (const auto& u : data)
+								{
+									system.WriteFriendList(*u);;
+								}
+								break;
+							}
+						}
+					}
+					else if (haventadd && deleted)
+					{
+						for (auto& friend_data : data)
+						{
+							if ((friend_data->phonenumber_receiver == usertophone || friend_data->phonenumber_sender == usertophone) && (friend_data->phonenumber_receiver == phonenumber_re || friend_data->phonenumber_sender == phonenumber_re) && friend_data->friend_add == -1)
+							{
+								friend_data->friend_add = 0;
+								friend_data->answer = ans_str;
+								ofstream clear_file("FriendList.txt");
+								clear_file.close();
+								for (const auto& u : data)
+								{
+									system.WriteFriendList(*u);;
+								}
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -338,7 +419,6 @@ void Friend::AcceptDeleteFriend(string& phonenumber) //查看好友请求 先加朋友
 			{
 				system.WriteFriendList(*u);;
 			}
-			break;
 		}
 	}
 	if (noone)
