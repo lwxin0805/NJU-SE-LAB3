@@ -104,7 +104,7 @@ void Moment::MomentCheckAll(string& phonenumber)
 		cout << "没有朋友圈" << endl;
 	}
 }
-bool Moment::MomentCheck(string& phonenumber) //查看朋友圈 (输入手机号)
+bool Moment::MomentCheck(string& phonenumber,char &index) //查看朋友圈 (输入手机号)
 {
 	System system;
 	system.ReadMoment();
@@ -112,22 +112,50 @@ bool Moment::MomentCheck(string& phonenumber) //查看朋友圈 (输入手机号)
 	system.ReadComment();
 	const vector<System::CommentData*>& comment = system.GetMyComment();
 	bool got = false;
-	for (const auto& moment : data)
+	switch (index)
 	{
-		if (phonenumber == moment->phonenumber && moment->visible ==1)
+	case'1':
+	{
+		for (const auto& moment : data)
 		{
-			got = true;
-			cout << moment->phonenumber << "：" << moment->content << endl;
-			cout << "点赞：" << moment->likecount << endl;
-			cout << "留言：" << endl;
-			for (const auto& comments : comment)
+			//用index
+			if (phonenumber == moment->phonenumber )
 			{
-				if (moment->index == comments->index && comments->visible == 1)
+				got = true;
+				cout << moment->phonenumber << "：" << moment->content << endl;
+				cout << "点赞：" << moment->likecount << endl;
+				cout << "留言：" << endl;
+				for (const auto& comments : comment)
 				{
-					cout << comments->phonenumber << ":" << comments->content << endl;
+					if (moment->index == comments->index && comments->visible == 1)
+					{
+						cout << comments->phonenumber << ":" << comments->content << endl;
+					}
 				}
 			}
 		}
+	}
+	case '2':
+	{
+		for (const auto& moment : data)
+		{
+			//用index
+			if (phonenumber == moment->phonenumber && moment->visible == 1)
+			{
+				got = true;
+				cout << moment->phonenumber << "：" << moment->content << endl;
+				cout << "点赞：" << moment->likecount << endl;
+				cout << "留言：" << endl;
+				for (const auto& comments : comment)
+				{
+					if (moment->index == comments->index && comments->visible == 1)
+					{
+						cout << comments->phonenumber << ":" << comments->content << endl;
+					}
+				}
+			}
+		}
+	}
 	}
 	if (got)
 	{
@@ -140,7 +168,8 @@ bool Moment::MomentCheck(string& phonenumber) //查看朋友圈 (输入手机号)
 }
 void Moment::MomentMe(string& phonenumber)
 {
-	if (!MomentCheck(phonenumber))
+	char index = '1';
+	if (!MomentCheck(phonenumber,index))
 	{
 		cout << "没有朋友圈" << endl;
 	}
@@ -150,11 +179,12 @@ void Moment::MomentOneFriend(string& phonenumber)
 	string input,ans;
 	while (true)
 	{
+		char index = '2';
 		cout << "您想查看哪位朋友的朋友圈？" << endl;
 		cin >> input;
 		if (a.BoolNotFriend(phonenumber, input) && CheckIfMomentSeen(input))//先查看是不是好友? 是朋友才能看朋友圈
 		{
-			if (!MomentCheck(input))
+			if (!MomentCheck(input,index))
 			{
 				cout << "没有朋友圈" << endl;
 			}
